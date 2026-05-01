@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Cricket - Coin Toss</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .toss-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        #coin {
+            width: 120px;
+            height: 120px;
+            background-color: #daa520;
+            border: 5px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            transition: transform 1s;
+        }
+        .toss-btn-group {
+            display: flex;
+            gap: 20px;
+        }
+        #next-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background-color: #6fffe9;
+            border: none;
+            color: #0b132b;
+            font-weight: bold;
+            border-radius: 5px;
+            display: none;
+        }
+        .spinning {
+            animation: spin 0.1s infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="toss-container">
+        <h1>THE TOSS</h1>
+        <div id="coin">H</div>
+        <div class="toss-btn-group">
+            <button class="menu-btn" id="heads-btn" onclick="startToss('H')">HEADS</button>
+            <button class="menu-btn" id="tails-btn" onclick="startToss('T')">TAILS</button>
+        </div>
+        <p id="toss-result-text">Pick Heads or Tails!</p>
+        <button id="next-btn" onclick="goToGame()">START GAME</button>
+    </div>
+
+    <script>
+        function startToss(userChoice) {
+            const coin = document.getElementById("coin");
+            const resultText = document.getElementById("toss-result-text");
+            const nextBtn = document.getElementById("next-btn");
+            const btns = document.querySelectorAll(".menu-btn");
+
+            btns.forEach(b => b.style.display = "none");
+            coin.classList.add("spinning");
+            resultText.innerText = "Flipping...";
+
+            setTimeout(() => {
+                coin.classList.remove("spinning");
+                const options = ["H", "T"];
+                const randomResult = options[Math.floor(Math.random() * options.length)];
+                coin.innerText = randomResult;
+
+                if (userChoice === randomResult) {
+                    resultText.innerText = "You won the toss! You are BATTING.";
+                    localStorage.setItem("userRole", "BATTING");
+                } else {
+                    resultText.innerText = "CPU won the toss! You are BOWLING.";
+                    localStorage.setItem("userRole", "BOWLING");
+                }
+                nextBtn.style.display = "inline-block";
+            }, 2000);
+        }
+
+        function goToGame() {
+            window.location.href = "game.html";
+        }
+    </script>
+</body>
+</html>

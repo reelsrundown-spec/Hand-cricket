@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Cricket - Stadium</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="stadium-wrapper">
+        <div id="score-overlay">
+    <div class="user-info">
+        <p>YOU</p>
+        <h1 id="user-score">0</h1>
+        <div id="life-icons">❤️❤️❤️</div>
+    </div>
+    <div class="vs-circle">VS</div>
+    <div class="cpu-info">
+        <p>CPU</p>
+        <h1 id="cpu-score">0</h1>
+    </div>
+    </div>
+
+        <div id="play-area">
+            <div class="hand-gesture" id="user-gesture">✊</div>
+            <div id="central-status">
+                <h1 id="timer-txt">3</h1>
+                <p id="status-txt">GO</p>
+            </div>
+            <div class="hand-gesture" id="cpu-gesture">✊</div>
+        </div>
+
+        <div id="controls-panel">
+            <div class="number-buttons">
+                <button class="control-btn" onclick="runMove(1)">1</button>
+                <button class="control-btn" onclick="runMove(2)">2</button>
+                <button class="control-btn" onclick="runMove(3)">3</button>
+                <button class="control-btn" onclick="runMove(4)">4</button>
+                <button class="control-btn" onclick="runMove(5)">5</button>
+                <button class="control-btn" onclick="runMove(6)">6</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

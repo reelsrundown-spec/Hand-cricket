@@ -1,0 +1,175 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #0b132b;
+    color: white;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* Common Container for All Pages */
+.menu-container, .toss-container, #stadium-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: radial-gradient(circle at center, #1c2541 0%, #0b132b 100%);
+    padding: 20px;
+}
+
+/* Headers */
+h1, .title {
+    color: #6fffe9;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Buttons Styling */
+.menu-btn, .control-btn, #start-btn, .toss-btn {
+    background: #3a506b;
+    color: #6fffe9;
+    border: none;
+    padding: 15px 30px;
+    margin: 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #050a18;
+    width: 250px;
+}
+
+.menu-btn:active, .control-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #050a18;
+}
+
+/* Stadium Specific Layout */
+#score-overlay {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(28, 37, 65, 0.9);
+    border-bottom: 2px solid #6fffe9;
+}
+
+#play-area {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#central-status {
+    width: 100px;
+    height: 100px;
+    border: 3px solid #6fffe9;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hand-gesture {
+    font-size: 5rem;
+}
+
+#controls-panel {
+    width: 100%;
+    padding: 20px;
+    background: #1c2541;
+}
+
+.number-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.number-buttons .control-btn {
+    width: auto;
+    font-size: 1.5rem;
+}
+
+/* Toss Coin */
+#coin {
+    width: 100px;
+    height: 100px;
+    background: gold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: black;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+/* 1. മെനുവും ടോസ് പേജും ഡാർക്ക് ആക്കാൻ */
+.menu-container, .toss-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #0b132b; /* വൈറ്റ് ബാക്ക്ഗ്രൗണ്ട് മാറ്റുന്നു */
+    color: white;
+}
+
+/* 2. ബട്ടണുകൾ വലുതാക്കാൻ (മെനുവിലും ടോസിലും) */
+.menu-btn {
+    width: 280px; /* വലിപ്പം കൂട്ടി */
+    padding: 20px;
+    font-size: 1.2rem;
+    background: #3a506b;
+    color: #6fffe9;
+    border: none;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    box-shadow: 0 5px 0 #050a18;
+    text-transform: uppercase;
+}
+
+/* 3. ടോസ് പേജിലെ ബട്ടണുകൾക്ക് മാത്രം */
+.toss-btn-group {
+    display: flex;
+    gap: 15px;
+}
+
+.toss-btn-group .menu-btn {
+    width: 130px; /* ടോസ് ബട്ടണുകൾക്ക് കുറച്ചുകൂടി വലിപ്പം */
+}
+
+/* 4. ടോസ് പേജിലെ കോയിൻ */
+#coin {
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #ffd700, #daa520);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    margin-bottom: 40px;
+    box-shadow: 0 0 25px rgba(218, 165, 32, 0.4);
+}
+body {
+    background: url('assets/background.png') no-repeat center center fixed;
+    background-size: cover;
+}
