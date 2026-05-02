@@ -3,7 +3,9 @@ let userChoiceNum = -1;
 let userScoreNum = 0;
 let cpuScoreNum = 0;
 let playerLife = 3; 
-let currentInnings = localStorage.getItem("userRole") || "USER"; 
+
+// Loads the role (BATTING/BOWLING) from Toss page
+let currentInnings = localStorage.getItem("userRole") === "BATTING" ? "USER" : "CPU"; 
 let targetScore = Infinity;
 let gameTimer = null;
 
@@ -31,7 +33,7 @@ function showResult(title, message, btnText, callback) {
     modal.classList.remove('hidden');
 }
 
-// Updates the Heart Icons
+// Updates the Heart Icons (Life)
 function updateLifeDisplay() {
     const lifeDisp = document.getElementById("life-icons");
     if (lifeDisp) {
@@ -69,7 +71,7 @@ function startClock() {
     }, 1000);
 }
 
-// Captures user button click
+// Captures user button click (1-6)
 function play(n) { 
     userChoiceNum = n; 
     const uChoiceDisp = document.getElementById("user-choice");
@@ -82,12 +84,12 @@ function processResult() {
     const cScoreDisp = document.getElementById("cpu-score");
     const cChoiceDisp = document.getElementById("cpu-choice");
 
-    // 1. Timeout Check
+    // 1. Timeout Check (User didn't pick a number)
     if (userChoiceNum === -1) {
         playerLife--;
         updateLifeDisplay();
         if (playerLife <= 0) { 
-            showResult("GAME OVER", "You missed too many chances! CPU Wins.", "RETRY", () => location.reload());
+            showResult("GAME OVER", "You missed too many chances!", "RETRY", () => location.reload());
             return; 
         }
         setTimeout(startClock, 1000); 
@@ -97,50 +99,51 @@ function processResult() {
     let cpuMove = Math.floor(Math.random() * 6) + 1;
     if (cChoiceDisp) cChoiceDisp.innerText = cpuMove;
 
-    // 2. Out Logic (When numbers match)
+    // 2. Main Gameplay Logic
     if (userChoiceNum === cpuMove) {
+        // Numbers match = Someone is OUT
         if (currentInnings === "USER") {
             // User was batting and got out
             targetScore = userScoreNum + 1;
-            currentInnings = "CPU";
-            showResult("OUT!", "Your Final Score: " + userScoreNum + ". CPU needs " + targetScore + " to win.", "START BOWLING", startClock);
+            currentInnings = "CPU"; // Switch to Bowling
+            showResult("OUT!", "You scored " + userScoreNum + ". CPU needs " + targetScore + " to win.", "START BOWLING", startClock);
         } else {
-            // CPU was batting and got out
+            // CPU was batting and got out (User Wins)
             if (cpuScoreNum < targetScore - 1) {
-                const winMargin = (targetScore - 1) - cpuScoreNum;
-                showResult("VICTORY!", "CPU is OUT! You won the match by " + winMargin + " runs.", "PLAY AGAIN", () => location.reload());
+                showResult("VICTORY!", "CPU is OUT! You won the match.", "PLAY AGAIN", () => location.reload());
             } else {
-                showResult("MATCH TIED!", "It's a draw! Both scored the same.", "PLAY AGAIN", () => location.reload());
+                showResult("MATCH TIED!", "Both scored the same runs!", "PLAY AGAIN", () => location.reload());
             }
         }
-    } 
-    // 3. Scoring Logic (Numbers don't match)
-    else {
+    } else {
+        // Numbers don't match = Runs are scored
         if (currentInnings === "USER") {
+            // User batting - add runs
             userScoreNum += userChoiceNum;
             if (uScoreDisp) uScoreDisp.innerText = userScoreNum;
         } else {
+            // CPU batting - add runs
             cpuScoreNum += cpuMove;
             if (cScoreDisp) cScoreDisp.innerText = cpuScoreNum;
             
-            // Check if CPU chased the target
+            // Check if CPU reached the target (User Loses)
             if (cpuScoreNum >= targetScore) { 
-                showResult("DEFEAT", "CPU chased the target and won the match!", "TRY AGAIN", () => location.reload());
+                showResult("DEFEAT", "CPU reached the target and won!", "TRY AGAIN", () => location.reload());
                 return; 
             }
         }
-        // Wait 1.5 seconds and start next round
+        // Round complete, wait and start next ball
         setTimeout(startClock, 1500);
     }
 }
 
-// Reset everything
+// Reset Game Data
 function resetGame() {
     localStorage.clear();
     location.reload();
 }
 
-// Initial Load
+// Initial Page Load
 document.addEventListener("DOMContentLoaded", () => { 
     updateLifeDisplay(); 
     if (document.getElementById("user-score")) {
