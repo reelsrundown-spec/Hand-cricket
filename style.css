@@ -1,73 +1,82 @@
+/* 1. അടിസ്ഥാന ക്രമീകരണങ്ങൾ */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     -webkit-tap-highlight-color: transparent;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    margin: 0;
-    padding: 0;
     width: 100vw;
     height: 100vh;
-    /* ബാക്ക്ഗ്രൗണ്ട് ഇമേജ് സെറ്റ് ചെയ്യുന്നു */
     background: url('assets/background.png') no-repeat center center fixed;
-    background-size: cover; /* ഇമേജ് സ്ക്രീനിൽ ഫുൾ ആയി വരാൻ */
-    background-color: #0b132b; /* ഇമേജ് ലോഡ് ആകുന്നതുവരെ ഈ കളർ കാണും */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-size: cover;
+    background-color: #0b132b; /* ഇമേജ് വരുന്നതുവരെ കാണാൻ */
     color: white;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Common Container for All Pages */
+/* 2. കണ്ടെയ്നറുകൾ - എല്ലാ പേജിനും പൊതുവായത് */
 .menu-container, .toss-container, #stadium-wrapper {
     width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: radial-gradient(circle at center, #1c2541 0%, #0b132b 100%);
+    justify-content: center;
+    background: rgba(11, 19, 43, 0.85); /* ബാക്ക്ഗ്രൗണ്ട് ഇമേജിന് മുകളിൽ ഒരു ഡാർക്ക് ലെയർ */
+    backdrop-filter: blur(5px);
     padding: 20px;
 }
 
-/* Headers */
+/* 3. ഹെഡറുകൾ */
 h1, .title {
     color: #6fffe9;
     margin-bottom: 30px;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(111, 255, 233, 0.5);
 }
 
-/* Buttons Styling */
-.menu-btn, .control-btn, #start-btn, .toss-btn {
+/* 4. ബട്ടണുകൾ */
+.menu-btn, .control-btn, .toss-btn {
     background: #3a506b;
     color: #6fffe9;
     border: none;
-    padding: 15px 30px;
+    padding: 18px;
     margin: 10px;
-    border-radius: 12px;
+    border-radius: 15px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 0 #050a18;
-    width: 250px;
+    box-shadow: 0 5px 0 #050a18;
+    width: 280px;
+    text-transform: uppercase;
+    transition: 0.2s;
 }
 
 .menu-btn:active, .control-btn:active {
-    transform: translateY(2px);
+    transform: translateY(3px);
     box-shadow: 0 2px 0 #050a18;
 }
 
-/* Stadium Specific Layout */
+/* 5. സ്റ്റേഡിയം (ഗെയിം പേജ്) ലേഔട്ട് */
 #score-overlay {
     width: 100%;
-    height: 120px;
+    height: 140px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: rgba(28, 37, 65, 0.9);
-    border-bottom: 2px solid #6fffe9;
+    background: rgba(28, 37, 65, 0.95);
+    border-bottom: 3px solid #6fffe9;
+    border-radius: 0 0 20px 20px;
 }
+
+.user-info, .cpu-info { text-align: center; }
+.vs-circle { font-weight: bold; color: #6fffe9; font-size: 1.2rem; }
 
 #play-area {
     flex: 1;
@@ -78,24 +87,25 @@ h1, .title {
 }
 
 #central-status {
-    width: 100px;
-    height: 100px;
-    border: 3px solid #6fffe9;
+    width: 110px;
+    height: 110px;
+    border: 4px solid #6fffe9;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: rgba(11, 19, 43, 0.5);
 }
 
-.hand-gesture {
-    font-size: 5rem;
-}
+.hand-gesture { font-size: 5.5rem; }
 
+/* 6. കൺട്രോൾ പാനൽ (നമ്പറുകൾ) */
 #controls-panel {
     width: 100%;
-    padding: 20px;
+    padding: 25px;
     background: #1c2541;
+    border-radius: 25px 25px 0 0;
 }
 
 .number-buttons {
@@ -108,74 +118,66 @@ h1, .title {
 
 .number-buttons .control-btn {
     width: auto;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    padding: 15px;
 }
 
-/* Toss Coin */
+/* 7. ടോസ് കോയിൻ */
 #coin {
-    width: 100px;
-    height: 100px;
-    background: gold;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    color: black;
-    margin-bottom: 20px;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-}
-/* 1. മെനുവും ടോസ് പേജും ഡാർക്ക് ആക്കാൻ */
-.menu-container, .toss-container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #0b132b; /* വൈറ്റ് ബാക്ക്ഗ്രൗണ്ട് മാറ്റുന്നു */
-    color: white;
-}
-
-/* 2. ബട്ടണുകൾ വലുതാക്കാൻ (മെനുവിലും ടോസിലും) */
-.menu-btn {
-    width: 280px; /* വലിപ്പം കൂട്ടി */
-    padding: 20px;
-    font-size: 1.2rem;
-    background: #3a506b;
-    color: #6fffe9;
-    border: none;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    box-shadow: 0 5px 0 #050a18;
-    text-transform: uppercase;
-}
-
-/* 3. ടോസ് പേജിലെ ബട്ടണുകൾക്ക് മാത്രം */
-.toss-btn-group {
-    display: flex;
-    gap: 15px;
-}
-
-.toss-btn-group .menu-btn {
-    width: 130px; /* ടോസ് ബട്ടണുകൾക്ക് കുറച്ചുകൂടി വലിപ്പം */
-}
-
-/* 4. ടോസ് പേജിലെ കോയിൻ */
-#coin {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
     background: radial-gradient(circle, #ffd700, #daa520);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin-bottom: 40px;
-    box-shadow: 0 0 25px rgba(218, 165, 32, 0.4);
+    box-shadow: 0 0 30px rgba(218, 165, 32, 0.6);
+    border: 4px solid #fff;
 }
-body {
-    background: url('assets/background.png') no-repeat center center fixed;
-    background-size: cover;
+
+/* 8. ബ്യൂട്ടിഫുൾ പോപ്പപ്പ് (Modal) */
+#game-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #1c2541, #0b132b);
+    padding: 40px;
+    border-radius: 25px;
+    text-align: center;
+    border: 3px solid #6fffe9;
+    box-shadow: 0 0 40px rgba(111, 255, 233, 0.3);
+    width: 85%;
+    max-width: 320px;
+}
+
+#modal-title { 
+    font-size: 2.2rem; 
+    color: #6fffe9; 
+    margin-bottom: 15px; 
+}
+
+#modal-msg { 
+    font-size: 1.3rem; 
+    margin-bottom: 25px; 
+}
+
+.modal-btn {
+    background: #6fffe9;
+    color: #0b132b;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
 }
