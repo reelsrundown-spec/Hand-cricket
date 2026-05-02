@@ -6,12 +6,18 @@
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #0b132b;
-    color: white;
-    height: 100vh;
+    margin: 0;
+    padding: 0;
     width: 100vw;
-    overflow: hidden;
+    height: 100vh;
+    /* ബാക്ക്ഗ്രൗണ്ട് ഇമേജ് സെറ്റ് ചെയ്യുന്നു */
+    background: url('assets/background.png') no-repeat center center fixed;
+    background-size: cover; /* ഇമേജ് സ്ക്രീനിൽ ഫുൾ ആയി വരാൻ */
+    background-color: #0b132b; /* ഇമേജ് ലോഡ് ആകുന്നതുവരെ ഈ കളർ കാണും */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
 }
 
 /* Common Container for All Pages */
