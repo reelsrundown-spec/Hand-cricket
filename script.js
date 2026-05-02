@@ -1,4 +1,41 @@
-// --- Game State Variables ---
+// --- Audio Path Configuration ---
+// Make sure the filenames match exactly what you uploaded to GitHub
+const bgMusic = new Audio('music/handcricket.mp3'); 
+bgMusic.loop = true;
+
+// --- Music Control Logic ---
+
+/**
+ * Handles playing and pausing the background music 
+ * based on user settings in localStorage.
+ */
+function handleBackgroundMusic() {
+    const isMusicEnabled = localStorage.getItem('musicEnabled') !== 'false';
+    
+    if (isMusicEnabled) {
+        // Browsers block autoplay, so we use a promise catch
+        bgMusic.play().catch(error => {
+            console.log("Autoplay prevented. Music will start after first interaction.");
+        });
+    } else {
+        bgMusic.pause();
+    }
+}
+
+/**
+ * Global click listener to start music on first user interaction.
+ * Modern browsers require this to allow audio playback.
+ */
+document.addEventListener('click', () => {
+    handleBackgroundMusic();
+}, { once: true });
+
+// Check and update music status whenever a page loads
+window.addEventListener('DOMContentLoaded', () => {
+    handleBackgroundMusic();
+});
+
+// l--- Game State Variables ---
 let userChoiceNum = -1;
 let userScoreNum = 0;
 let cpuScoreNum = 0;
