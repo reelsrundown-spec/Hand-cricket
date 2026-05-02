@@ -86,27 +86,42 @@
 
     <script>
         // 1. മ്യൂസിക് ലോഡ് ചെയ്യുന്നു
-        const bgMusic = new Audio('music/sounds/handcricket.mp3');
-        bgMusic.loop = true;
+const bgMusic = new Audio('music/sounds/handcricket.mp3');
+bgMusic.loop = true;
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
+
+// ലോഡിംഗ് ബാർ ആനിമേഷൻ
+let w = 0;
+let int = setInterval(() => {
+    w += 2;
+    const bar = document.getElementById('bar');
+    if(bar) bar.style.width = w + '%';
+
+    if (w >= 100) {
+        clearInterval(int);
+        document.getElementById('load-txt').innerText = 'TAP TO START';
+        
+        const startBtn = document.getElementById('start-btn');
+        if (startBtn) {
+            startBtn.style.display = 'inline-block';
+            
+            // ബട്ടൺ ക്ലിക്ക് ഇവന്റ് ഇവിടെ കൃത്യമായി സെറ്റ് ചെയ്യുന്നു
+            startBtn.onclick = function() {
+                // മ്യൂസിക് പ്ലേ ചെയ്യുന്നു
+                bgMusic.play().catch(e => console.log("Audio play failed"));
+                
+                // അര സെക്കൻഡ് കഴിഞ്ഞ് പേജ് മാറുന്നു (മ്യൂസിക് സ്റ്റാർട്ട് ആകാൻ സമയം നൽകുന്നു)
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 400);
+            };
         }
-
-        // ലോഡിംഗ് ബാർ ആനിമേഷൻ
-        let w = 0;
-        let int = setInterval(() => {
-            w += 2;
-            const bar = document.getElementById('bar');
-            if(bar) bar.style.width = w + '%';
-
-            if (w >= 100) {
-                clearInterval(int);
-                // ലോഡിംഗ് കഴിഞ്ഞാൽ ടെക്സ്റ്റ് മാറുന്നു
-                document.getElementById('load-txt').innerText = 'TAP TO START';
-                document.getElementById('start-btn').style.display = 'inline-block';
-            }
-        }, 40);
+    }
+}, 40);
+        
     </script>
 </body>
 </html>
