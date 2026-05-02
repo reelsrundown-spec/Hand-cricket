@@ -104,10 +104,20 @@
         });
 
         function toggleMusic() {
-            const isEnabled = document.getElementById('music-toggle').checked;
-            localStorage.setItem('musicEnabled', isEnabled);
-            // Logic to play/stop music can be added here
+    const musicToggle = document.getElementById('music-toggle');
+    const isEnabled = musicToggle.checked;
+    
+    // Save preference to localStorage
+    localStorage.setItem('musicEnabled', isEnabled);
+    
+    // Apply changes immediately
+    if (isEnabled) {
+        bgMusic.play();
+    } else {
+        bgMusic.pause();
+    }
         }
+        
 
         function toggleSFX() {
             const isEnabled = document.getElementById('sfx-toggle').checked;
