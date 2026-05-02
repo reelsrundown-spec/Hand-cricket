@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Cricket - Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            padding: 20px;
+        }
+        .setting-row {
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(28, 37, 65, 0.8);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid #6fffe9;
+        }
+        /* Toggle Switch Styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #1c2541;
+            transition: .4s;
+            border-radius: 24px;
+            border: 1px solid #6fffe9;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; width: 16px;
+            left: 4px; bottom: 3px;
+            background-color: #6fffe9;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #6fffe9; }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background-color: #0b132b;
+        }
+        .login-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #user-info { margin-bottom: 10px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <h1 class="logo-text">SETTINGS</h1>
+
+        <div class="setting-row">
+            <span>Background Music</span>
+            <label class="switch">
+                <input type="checkbox" id="music-toggle" checked onchange="toggleMusic()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <span>Sound Effects</span>
+            <label class="switch">
+                <input type="checkbox" id="sfx-toggle" checked onchange="toggleSFX()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="login-section">
+            <div id="user-info">Not Logged In</div>
+            <button id="login-btn" onclick="handleLogin()">LOGIN WITH GOOGLE</button>
+        </div>
+
+        <button class="menu-btn" onclick="window.location.href='home.html'" style="margin-top: 20px;">BACK TO MENU</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // Settings Persistence
+        document.addEventListener('DOMContentLoaded', () => {
+            const musicStatus = localStorage.getItem('musicEnabled') !== 'false';
+            const sfxStatus = localStorage.getItem('sfxEnabled') !== 'false';
+            
+            document.getElementById('music-toggle').checked = musicStatus;
+            document.getElementById('sfx-toggle').checked = sfxStatus;
+        });
+
+        function toggleMusic() {
+            const isEnabled = document.getElementById('music-toggle').checked;
+            localStorage.setItem('musicEnabled', isEnabled);
+            // Logic to play/stop music can be added here
+        }
+
+        function toggleSFX() {
+            const isEnabled = document.getElementById('sfx-toggle').checked;
+            localStorage.setItem('sfxEnabled', isEnabled);
+        }
+
+        function handleLogin() {
+            // Your Firebase Login Logic will go here
+            alert("Firebase Login Integration coming soon!");
+        }
+    </script>
+</body>
+</html>
+
