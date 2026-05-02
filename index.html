@@ -85,6 +85,13 @@
     </div>
 
     <script>
+        // എല്ലാ പേജിലും (home.html, toss.html) ഇത് ചേർക്കുക
+const bgMusic = new Audio('music/sounds/handcricket.mp3');
+bgMusic.loop = true;
+bgMusic.play().catch(() => {
+    // യൂസർ നേരത്തെ ക്ലിക്ക് ചെയ്തത് കൊണ്ട് ഇത് പ്ലേ ആയിക്കോളും
+});
+        
         // 1. മ്യൂസിക് ലോഡ് ചെയ്യുന്നു
 const bgMusic = new Audio('music/sounds/handcricket.mp3');
 bgMusic.loop = true;
