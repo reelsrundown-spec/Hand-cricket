@@ -8,9 +8,27 @@ let gameTimer = null;
 
 const hands = { 0: "✊", 1: "☝️", 2: "✌️", 3: "🤟", 4: "🖖", 5: "🖐️", 6: "👍" };
 
-// Service Worker Registration (ഇൻസ്റ്റാൾ ബട്ടൺ വരാൻ ഇത് നിർബന്ധമാണ്)
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.log("SW error", err));
+}
+
+// Custom Modal കാണിക്കാനുള്ള ഫംഗ്ഷനുകൾ
+function showModal(title, message) {
+    const modal = document.getElementById("game-modal");
+    const mTitle = document.getElementById("modal-title");
+    const mMsg = document.getElementById("modal-msg");
+    
+    if (modal && mTitle && mMsg) {
+        mTitle.innerText = title;
+        mMsg.innerText = message;
+        modal.style.display = "flex";
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById("game-modal");
+    if (modal) modal.style.display = "none";
 }
 
 function updateLifeDisplay() {
@@ -61,8 +79,8 @@ function processResult() {
         playerLife--;
         updateLifeDisplay();
         if (playerLife <= 0) { 
-            alert("Game Over! 3 Misses."); 
-            location.reload(); 
+            showModal("GAME OVER", "You missed 3 times!");
+            setTimeout(() => { location.reload(); }, 3000);
             return; 
         }
         setTimeout(startClock, 1500); 
@@ -76,11 +94,11 @@ function processResult() {
         if (currentInnings === "USER") {
             targetScore = userScoreNum + 1;
             currentInnings = "CPU";
-            alert("OUT! CPU needs " + targetScore + " to win.");
-            setTimeout(startClock, 2000);
+            showModal("OUT!", "CPU needs " + targetScore + " to win.");
+            setTimeout(() => { closeModal(); startClock(); }, 2500);
         } else {
-            alert("CPU OUT! YOU WON!");
-            location.reload();
+            showModal("VICTORY!", "YOU WON THE MATCH! 🎉");
+            setTimeout(() => { location.reload(); }, 4000);
         }
     } else {
         if (currentInnings === "USER") {
@@ -90,8 +108,8 @@ function processResult() {
             cpuScoreNum += cpuMove;
             if (cScoreDisp) cScoreDisp.innerText = cpuScoreNum;
             if (cpuScoreNum >= targetScore) { 
-                alert("CPU WON!"); 
-                location.reload(); 
+                showModal("DEFEAT", "CPU WON THE MATCH!");
+                setTimeout(() => { location.reload(); }, 4000);
                 return; 
             }
         }
@@ -101,9 +119,7 @@ function processResult() {
 
 document.addEventListener("DOMContentLoaded", () => { 
     updateLifeDisplay(); 
-    // game.html-ൽ മാത്രമേ ക്ലോക്ക് തുടങ്ങാവൂ എന്ന് ഉറപ്പാക്കാൻ
     if (document.getElementById("timer-txt")) {
         startClock(); 
     }
 });
-
