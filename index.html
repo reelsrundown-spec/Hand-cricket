@@ -4,131 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hand Cricket Pro</title>
-
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="style.css">
     <meta name="theme-color" content="#0b132b">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-
-    <style>
-        body {
-            margin: 0;
-            background: #0b132b;
-            color: #6fffe9;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .loader-box {
-            text-align: center;
-            width: 80%;
-            max-width: 400px;
-        }
-
-        h1 {
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-        }
-
-        .bar-bg {
-            width: 100%;
-            height: 8px;
-            background: #1c2541;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            width: 0%;
-            height: 100%;
-            background: #6fffe9;
-            box-shadow: 0 0 15px #6fffe9;
-            transition: width 0.1s;
-        }
-
-        #start-btn {
-            padding: 15px 30px;
-            background: #6fffe9;
-            color: #0b132b;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            display: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(111, 255, 233, 0.3);
-            margin-top: 20px;
-        }
-
-        #load-txt {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            letter-spacing: 1px;
-        }
-    </style>
 </head>
 <body>
 
-    <div class="loader-box">
-        <h1>Hand Cricket</h1>
-        <div class="bar-bg">
-            <div id="bar" class="bar-fill"></div>
+    <div class="loader-container">
+        <h1 class="logo-text">HAND CRICKET</h1>
+        
+        <div class="progress-wrapper">
+            <div id="progress-bar" class="progress-fill"></div>
         </div>
-        <p id="load-txt">Loading...</p>
-        <button id="start-btn" onclick="bgMusic.play(); setTimeout(() => { location.href='home.html' }, 100);">START GAME</button>
+        
+        <p id="status-text">INITIALIZING...</p>
+        
+        <button id="start-btn" class="hidden">START GAME</button>
     </div>
 
     <script>
-        // എല്ലാ പേജിലും (home.html, toss.html) ഇത് ചേർക്കുക
-const bgMusic = new Audio('music/sounds/handcricket.mp3');
-bgMusic.loop = true;
-bgMusic.play().catch(() => {
-    // യൂസർ നേരത്തെ ക്ലിക്ക് ചെയ്തത് കൊണ്ട് ഇത് പ്ലേ ആയിക്കോളും
-});
-        
-        // 1. മ്യൂസിക് ലോഡ് ചെയ്യുന്നു
-const bgMusic = new Audio('music/sounds/handcricket.mp3');
-bgMusic.loop = true;
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-}
-
-// ലോഡിംഗ് ബാർ ആനിമേഷൻ
-let w = 0;
-let int = setInterval(() => {
-    w += 2;
-    const bar = document.getElementById('bar');
-    if(bar) bar.style.width = w + '%';
-
-    if (w >= 100) {
-        clearInterval(int);
-        document.getElementById('load-txt').innerText = 'TAP TO START';
-        
+        const progressBar = document.getElementById('progress-bar');
+        const statusText = document.getElementById('status-text');
         const startBtn = document.getElementById('start-btn');
-        if (startBtn) {
-            startBtn.style.display = 'inline-block';
-            
-            // ബട്ടൺ ക്ലിക്ക് ഇവന്റ് ഇവിടെ കൃത്യമായി സെറ്റ് ചെയ്യുന്നു
-            startBtn.onclick = function() {
-                // മ്യൂസിക് പ്ലേ ചെയ്യുന്നു
-                bgMusic.play().catch(e => console.log("Audio play failed"));
-                
-                // അര സെക്കൻഡ് കഴിഞ്ഞ് പേജ് മാറുന്നു (മ്യൂസിക് സ്റ്റാർട്ട് ആകാൻ സമയം നൽകുന്നു)
-                setTimeout(() => {
-                    window.location.href = 'home.html';
-                }, 400);
-            };
-        }
-    }
-}, 40);
-        
+
+        let width = 0;
+        const loadingInterval = setInterval(() => {
+            width += Math.floor(Math.random() * 5) + 1; // Realistic loading speed
+            if (width >= 100) {
+                width = 100;
+                clearInterval(loadingInterval);
+                statusText.innerText = "READY TO PLAY";
+                startBtn.classList.remove('hidden');
+            }
+            progressBar.style.width = width + '%';
+        }, 100);
+
+        startBtn.onclick = () => {
+            // Background music initialization can be added here later
+            window.location.href = 'home.html';
+        };
     </script>
 </body>
 </html>
