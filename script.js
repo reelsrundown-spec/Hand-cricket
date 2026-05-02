@@ -8,34 +8,26 @@ let gameTimer = null;
 
 const hands = { 0: "✊", 1: "☝️", 2: "✌️", 3: "🤟", 4: "🖖", 5: "🖐️", 6: "👍" };
 
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(err => console.log("SW error", err));
-}
-
-// Custom Modal കാണിക്കാനുള്ള ഫംഗ്ഷനുകൾ
-function showModal(title, message) {
+// ബ്യൂട്ടിഫുൾ പോപ്പപ്പ് കാണിക്കാൻ
+function showResult(title, message, btnText, callback) {
     const modal = document.getElementById("game-modal");
-    const mTitle = document.getElementById("modal-title");
-    const mMsg = document.getElementById("modal-msg");
+    document.getElementById("modal-title").innerText = title;
+    document.getElementById("modal-msg").innerText = message;
+    const btn = modal.querySelector(".modal-btn") || modal.querySelector("button");
+    btn.innerText = btnText;
     
-    if (modal && mTitle && mMsg) {
-        mTitle.innerText = title;
-        mMsg.innerText = message;
-        modal.style.display = "flex";
-    }
-}
-
-function closeModal() {
-    const modal = document.getElementById("game-modal");
-    if (modal) modal.style.display = "none";
+    // പഴയ ക്ലിക്ക് ഇവന്റുകൾ കളയാൻ
+    btn.onclick = () => {
+        modal.style.display = "none";
+        if (callback) callback();
+    };
+    
+    modal.style.display = "flex";
 }
 
 function updateLifeDisplay() {
     const lifeDisp = document.getElementById("life-icons");
-    if (lifeDisp) {
-        lifeDisp.innerText = "❤️".repeat(playerLife) + "🖤".repeat(3 - playerLife);
-    }
+    if (lifeDisp) lifeDisp.innerText = "❤️".repeat(playerLife) + "🖤".repeat(3 - playerLife);
 }
 
 function startClock() {
@@ -75,41 +67,43 @@ function processResult() {
     const cScoreDisp = document.getElementById("cpu-score");
     const cMove = document.getElementById("cpu-gesture");
 
+    // 1. ടൈം ഔട്ട് ലോജിക്
     if (userChoiceNum === -1) {
         playerLife--;
         updateLifeDisplay();
         if (playerLife <= 0) { 
-            showModal("GAME OVER", "You missed 3 times!");
-            setTimeout(() => { location.reload(); }, 3000);
+            showResult("GAME OVER", "3 Misses! CPU Won.", "RETRY", () => location.reload());
             return; 
         }
-        setTimeout(startClock, 1500); 
+        setTimeout(startClock, 1000); 
         return;
     }
 
     let cpuMove = Math.floor(Math.random() * 6) + 1;
     if (cMove) cMove.innerText = hands[cpuMove];
 
+    // 2. ഔട്ട് ലോജിക്
     if (userChoiceNum === cpuMove) {
         if (currentInnings === "USER") {
             targetScore = userScoreNum + 1;
             currentInnings = "CPU";
-            showModal("OUT!", "CPU needs " + targetScore + " to win.");
-            setTimeout(() => { closeModal(); startClock(); }, 2500);
+            showResult("OUT!", "Target Score: " + targetScore, "CONTINUE", startClock);
         } else {
-            showModal("VICTORY!", "YOU WON THE MATCH! 🎉");
-            setTimeout(() => { location.reload(); }, 4000);
+            // CPU ഔട്ട് ആയി, നീ ജയിച്ചു
+            showResult("VICTORY!", "You bowled out CPU!", "PLAY AGAIN", () => location.reload());
         }
     } else {
+        // 3. സ്കോറിംഗ് ലോജിക്
         if (currentInnings === "USER") {
             userScoreNum += userChoiceNum;
             if (uScoreDisp) uScoreDisp.innerText = userScoreNum;
         } else {
             cpuScoreNum += cpuMove;
             if (cScoreDisp) cScoreDisp.innerText = cpuScoreNum;
+            
+            // CPU ടാർഗെറ്റ് മറികടന്നോ എന്ന് നോക്കാം
             if (cpuScoreNum >= targetScore) { 
-                showModal("DEFEAT", "CPU WON THE MATCH!");
-                setTimeout(() => { location.reload(); }, 4000);
+                showResult("DEFEAT", "CPU chased the target!", "TRY AGAIN", () => location.reload());
                 return; 
             }
         }
@@ -119,7 +113,5 @@ function processResult() {
 
 document.addEventListener("DOMContentLoaded", () => { 
     updateLifeDisplay(); 
-    if (document.getElementById("timer-txt")) {
-        startClock(); 
-    }
+    if (document.getElementById("timer-txt")) startClock(); 
 });
