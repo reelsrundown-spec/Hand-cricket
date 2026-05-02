@@ -65,13 +65,12 @@ function play(n) {
     const uChoiceDisp = document.getElementById("user-choice");
     if (uChoiceDisp) uChoiceDisp.innerText = n; 
 }
-
 function processResult() {
     const uScoreDisp = document.getElementById("user-score");
     const cScoreDisp = document.getElementById("cpu-score");
     const cChoiceDisp = document.getElementById("cpu-choice");
 
-    // 1. Timeout Check
+    // 1. Timeout Logic (If no button is pressed)
     if (userChoiceNum === -1) {
         playerLife--;
         updateLifeDisplay();
@@ -86,39 +85,40 @@ function processResult() {
     let cpuMove = Math.floor(Math.random() * 6) + 1;
     if (cChoiceDisp) cChoiceDisp.innerText = cpuMove;
 
-    // 2. Out Logic
+    // 2. Out Logic (When numbers match)
     if (userChoiceNum === cpuMove) {
         if (currentInnings === "USER") {
+            // User was batting and got out
             targetScore = userScoreNum + 1;
             currentInnings = "CPU";
-            showResult("OUT!", "Target Score for CPU: " + targetScore, "START BOWLING", startClock);
+            showResult("OUT!", "Your Final Score: " + userScoreNum + ". Target for CPU: " + targetScore, "START BOWLING", startClock);
         } else {
-            showResult("VICTORY!", "You bowled out CPU! You Won!", "PLAY AGAIN", () => location.reload());
+            // CPU was batting and got out
+            if (cpuScoreNum < targetScore - 1) {
+                const winMargin = (targetScore - 1) - cpuScoreNum;
+                showResult("VICTORY!", "You bowled out CPU! You won by " + winMargin + " runs.", "PLAY AGAIN", () => location.reload());
+            } else {
+                showResult("MATCH TIED!", "Both teams scored the same runs!", "PLAY AGAIN", () => location.reload());
+            }
         }
     } else {
         // 3. Scoring Logic
         if (currentInnings === "USER") {
+            // User batting
             userScoreNum += userChoiceNum;
             if (uScoreDisp) uScoreDisp.innerText = userScoreNum;
         } else {
+            // CPU batting
             cpuScoreNum += cpuMove;
             if (cScoreDisp) cScoreDisp.innerText = cpuScoreNum;
             
+            // Check if CPU chased the target
             if (cpuScoreNum >= targetScore) { 
-                showResult("DEFEAT", "CPU chased the target!", "TRY AGAIN", () => location.reload());
+                showResult("DEFEAT", "CPU chased the target and won the match!", "TRY AGAIN", () => location.reload());
                 return; 
             }
         }
+        // Proceed to next delivery
         setTimeout(startClock, 1500);
     }
 }
-
-function resetGame() {
-    location.reload();
-}
-
-document.addEventListener("DOMContentLoaded", () => { 
-    updateLifeDisplay(); 
-    // Only start clock if we are on the game page
-    if (document.getElementById("user-score")) startClock(); 
-});
