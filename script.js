@@ -8,20 +8,23 @@ let gameTimer = null;
 
 const hands = { 0: "✊", 1: "☝️", 2: "✌️", 3: "🤟", 4: "🖖", 5: "🖐️", 6: "👍" };
 
-// ബ്യൂട്ടിഫുൾ പോപ്പപ്പ് കാണിക്കാൻ
+// Function to show game result in a modal/popup
 function showResult(title, message, btnText, callback) {
     const modal = document.getElementById("game-modal");
+    if (!modal) {
+        alert(title + "\n" + message);
+        if (callback) callback();
+        return;
+    }
     document.getElementById("modal-title").innerText = title;
     document.getElementById("modal-msg").innerText = message;
-    const btn = modal.querySelector(".modal-btn") || modal.querySelector("button");
-    btn.innerText = btnText;
     
-    // പഴയ ക്ലിക്ക് ഇവന്റുകൾ കളയാൻ
+    const btn = modal.querySelector("button");
+    btn.innerText = btnText;
     btn.onclick = () => {
         modal.style.display = "none";
         if (callback) callback();
     };
-    
     modal.style.display = "flex";
 }
 
@@ -32,14 +35,14 @@ function updateLifeDisplay() {
 
 function startClock() {
     userChoiceNum = -1;
-    const uMove = document.getElementById("user-gesture");
-    const cMove = document.getElementById("cpu-gesture");
-    const statusTxt = document.getElementById("status-txt");
-    const timerTxt = document.getElementById("timer-txt");
+    const uMove = document.getElementById("user-choice");
+    const cMove = document.getElementById("cpu-choice");
+    const statusTxt = document.getElementById("status");
+    const timerTxt = document.getElementById("timer");
 
-    if (uMove) uMove.innerText = "✊";
-    if (cMove) cMove.innerText = "✊";
-    if (statusTxt) statusTxt.innerText = currentInnings === "USER" ? "YOU BAT" : "CPU BAT";
+    if (uMove) uMove.innerText = "-";
+    if (cMove) cMove.innerText = "-";
+    if (statusTxt) statusTxt.innerText = currentInnings === "USER" ? "YOU ARE BATTING" : "CPU IS BATTING";
     
     let time = 3;
     if (timerTxt) timerTxt.innerText = time;
@@ -56,23 +59,24 @@ function startClock() {
     }, 1000);
 }
 
-function runMove(n) { 
+// Function called when you press 1-6 buttons
+function play(n) { 
     userChoiceNum = n; 
-    const uMove = document.getElementById("user-gesture");
-    if (uMove) uMove.innerText = hands[n]; 
+    const uChoiceDisp = document.getElementById("user-choice");
+    if (uChoiceDisp) uChoiceDisp.innerText = n; 
 }
 
 function processResult() {
     const uScoreDisp = document.getElementById("user-score");
     const cScoreDisp = document.getElementById("cpu-score");
-    const cMove = document.getElementById("cpu-gesture");
+    const cChoiceDisp = document.getElementById("cpu-choice");
 
-    // 1. ടൈം ഔട്ട് ലോജിക്
+    // 1. Timeout Check
     if (userChoiceNum === -1) {
         playerLife--;
         updateLifeDisplay();
         if (playerLife <= 0) { 
-            showResult("GAME OVER", "3 Misses! CPU Won.", "RETRY", () => location.reload());
+            showResult("GAME OVER", "You missed 3 times! CPU Wins.", "RETRY", () => location.reload());
             return; 
         }
         setTimeout(startClock, 1000); 
@@ -80,20 +84,19 @@ function processResult() {
     }
 
     let cpuMove = Math.floor(Math.random() * 6) + 1;
-    if (cMove) cMove.innerText = hands[cpuMove];
+    if (cChoiceDisp) cChoiceDisp.innerText = cpuMove;
 
-    // 2. ഔട്ട് ലോജിക്
+    // 2. Out Logic
     if (userChoiceNum === cpuMove) {
         if (currentInnings === "USER") {
             targetScore = userScoreNum + 1;
             currentInnings = "CPU";
-            showResult("OUT!", "Target Score: " + targetScore, "CONTINUE", startClock);
+            showResult("OUT!", "Target Score for CPU: " + targetScore, "START BOWLING", startClock);
         } else {
-            // CPU ഔട്ട് ആയി, നീ ജയിച്ചു
-            showResult("VICTORY!", "You bowled out CPU!", "PLAY AGAIN", () => location.reload());
+            showResult("VICTORY!", "You bowled out CPU! You Won!", "PLAY AGAIN", () => location.reload());
         }
     } else {
-        // 3. സ്കോറിംഗ് ലോജിക്
+        // 3. Scoring Logic
         if (currentInnings === "USER") {
             userScoreNum += userChoiceNum;
             if (uScoreDisp) uScoreDisp.innerText = userScoreNum;
@@ -101,7 +104,6 @@ function processResult() {
             cpuScoreNum += cpuMove;
             if (cScoreDisp) cScoreDisp.innerText = cpuScoreNum;
             
-            // CPU ടാർഗെറ്റ് മറികടന്നോ എന്ന് നോക്കാം
             if (cpuScoreNum >= targetScore) { 
                 showResult("DEFEAT", "CPU chased the target!", "TRY AGAIN", () => location.reload());
                 return; 
@@ -111,7 +113,12 @@ function processResult() {
     }
 }
 
+function resetGame() {
+    location.reload();
+}
+
 document.addEventListener("DOMContentLoaded", () => { 
     updateLifeDisplay(); 
-    if (document.getElementById("timer-txt")) startClock(); 
+    // Only start clock if we are on the game page
+    if (document.getElementById("user-score")) startClock(); 
 });
