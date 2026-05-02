@@ -1,6 +1,7 @@
 // --- Audio Path Configuration ---
 // Make sure the filenames match exactly what you uploaded to GitHub
-const bgMusic = new Audio('music/handcricket.mp3'); 
+// ശരിയായ പാത്ത് ഇതാണ്
+const bgMusic = new Audio('music/sounds/handcricket.mp3'); 
 bgMusic.loop = true;
 
 // --- Music Control Logic ---
