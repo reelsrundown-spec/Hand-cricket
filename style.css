@@ -119,13 +119,24 @@ button:active {
     justify-content: center;
     align-items: center;
 }
-
 #controls-panel {
-    background: rgba(28, 37, 65, 0.9);
+    background: rgba(28, 37, 65, 0.95);
     padding: 20px;
+    padding-bottom: 80px; /* ബട്ടണുകൾ മുകളിലേക്ക് കയറ്റി നിർത്താൻ */
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
 }
+
+.control-btn {
+    padding: 20px;
+    font-size: 1.5rem;
+    background: #6fffe9;
+    color: #0b132b;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
 
 .number-buttons {
     display: grid;
@@ -133,10 +144,7 @@ button:active {
     gap: 15px;
 }
 
-.control-btn {
-    padding: 20px;
-    font-size: 1.5rem;
-}
+
 
 /* Modal Styling */
 .modal-overlay {
