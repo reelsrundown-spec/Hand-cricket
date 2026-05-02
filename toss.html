@@ -52,12 +52,10 @@
     </style>
 </head>
 <body>
-    <div class="toss-container">
-        <h1>THE TOSS</h1>
-        <div id="coin">H</div>
-        <div class="toss-btn-group">
-            <button class="menu-btn" id="heads-btn" onclick="startToss('H')">HEADS</button>
-            <button class="menu-btn" id="tails-btn" onclick="startToss('T')">TAILS</button>
+<div class="toss-btn-group">
+    <button class="menu-btn" onclick="handleToss('HEADS')">HEADS</button>
+    <button class="menu-btn" onclick="handleToss('TAILS')">TAILS</button>
+</div>
         </div>
         <p id="toss-result-text">Pick Heads or Tails!</p>
         <button id="next-btn" onclick="goToGame()">START GAME</button>
