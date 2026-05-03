@@ -121,12 +121,9 @@ function play(n) {
 function processResult() {
     const uScoreDisp = document.getElementById("user-score");
     const cScoreDisp = document.getElementById("cpu-score");
-    
-    // പഴയ uChoiceDisp, cChoiceDisp എന്നിവയ്ക്ക് പകരം ഇമേജ് ഐഡികൾ ഉപയോഗിക്കുന്നു
-    const uHandImg = document.getElementById("user-hand-img");
-    const cHandImg = document.getElementById("cpu-hand-img");
+    const uHandImg = document.getElementById("user-hand-img"); // പുതിയത്
+    const cHandImg = document.getElementById("cpu-hand-img"); // പുതിയത്
 
-    // 1. Timeout Check
     if (userChoiceNum === -1) {
         playerLife--;
         updateLifeDisplay();
@@ -139,49 +136,40 @@ function processResult() {
     }
 
     let cpuMove = Math.floor(Math.random() * 6) + 1;
-
-    // --- ഇതാണ് പുതിയതായി ആഡ് ചെയ്യേണ്ട രണ്ട് വരികൾ ---
-    if (uHandImg) uHandImg.src = `assets/${userChoiceNum}.png`;
-    if (cHandImg) cHandImg.src = `assets/${cpuMove}.png`;
-    // ----------------------------------------------
     
-    // 2. Main Gameplay Logic
+    // --- ചിത്രങ്ങൾ മാറ്റുന്ന വരികൾ ---
+    if (uHandImg) uHandImg.src = "assets/" + userChoiceNum + ".png";
+    if (cHandImg) cHandImg.src = "assets/" + cpuMove + ".png";
+    // ----------------------------
+
     if (userChoiceNum === cpuMove) {
-        // Numbers match = Someone is OUT
         if (currentInnings === "USER") {
-            // User was batting and got out
             targetScore = userScoreNum + 1;
-            currentInnings = "CPU"; // Switch to Bowling
+            currentInnings = "CPU";
             showResult("OUT!", "You scored " + userScoreNum + ". CPU needs " + targetScore + " to win.", "START BOWLING", startClock);
         } else {
-            // CPU was batting and got out (User Wins)
             if (cpuScoreNum < targetScore - 1) {
-                showResult("VICTORY!", "CPU is OUT! You won the match.", "PLAY AGAIN", () => location.reload());
+                showResult("VICTORY!", "CPU is OUT! You won.", "PLAY AGAIN", () => location.reload());
             } else {
-                showResult("MATCH TIED!", "Both scored the same runs!", "PLAY AGAIN", () => location.reload());
+                showResult("MATCH TIED!", "Both scored same!", "PLAY AGAIN", () => location.reload());
             }
         }
     } else {
-        // Numbers don't match = Runs are scored
         if (currentInnings === "USER") {
-            // User batting - add runs
             userScoreNum += userChoiceNum;
             if (uScoreDisp) uScoreDisp.innerText = userScoreNum;
         } else {
-            // CPU batting - add runs
             cpuScoreNum += cpuMove;
             if (cScoreDisp) cScoreDisp.innerText = cpuScoreNum;
-            
-            // Check if CPU reached the target (User Loses)
             if (cpuScoreNum >= targetScore) { 
-                showResult("DEFEAT", "CPU reached the target and won!", "TRY AGAIN", () => location.reload());
+                showResult("DEFEAT", "CPU won!", "TRY AGAIN", () => location.reload());
                 return; 
             }
         }
-        // Round complete, wait and start next ball
         setTimeout(startClock, 1500);
     }
 }
+        
 
 // Reset Game Data
 function resetGame() {
