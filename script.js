@@ -80,19 +80,21 @@ function updateLifeDisplay() {
 }
 
 // Starts the 3-second countdown
-function startClock() {
-    userChoiceNum = -1;
-    const uChoiceDisp = document.getElementById("user-choice");
-    const cChoiceDisp = document.getElementById("cpu-choice");
-    const statusTxt = document.getElementById("status");
-    const timerTxt = document.getElementById("timer");
 
+    function startClock() {
+    userChoiceNum = -1;
+    // പഴയ ചിത്രങ്ങൾ മാറ്റി ലോഗോയോ ഡിഫോൾട്ട് ചിത്രമോ കാണിക്കാൻ:
+    if (document.getElementById("user-hand-img")) document.getElementById("user-hand-img").src = "assets/6.png";
+    if (document.getElementById("cpu-hand-img")) document.getElementById("cpu-hand-img").src = "assets/6.png";
+
+    // ബാക്കി കോഡുകൾ പഴയതുപോലെ...
+        
     if (uChoiceDisp) uChoiceDisp.innerText = "-";
     if (cChoiceDisp) cChoiceDisp.innerText = "-";
     
     if (statusTxt) {
         statusTxt.innerText = currentInnings === "USER" ? "YOU ARE BATTING" : "CPU IS BATTING";
-    }
+    
     
     let time = 3;
     if (timerTxt) timerTxt.innerText = time;
@@ -115,14 +117,16 @@ function play(n) {
     const uChoiceDisp = document.getElementById("user-choice");
     if (uChoiceDisp) uChoiceDisp.innerText = n; 
 }
-
 // --- Main Game Logic ---
 function processResult() {
     const uScoreDisp = document.getElementById("user-score");
     const cScoreDisp = document.getElementById("cpu-score");
-    const cChoiceDisp = document.getElementById("cpu-choice");
+    
+    // പഴയ uChoiceDisp, cChoiceDisp എന്നിവയ്ക്ക് പകരം ഇമേജ് ഐഡികൾ ഉപയോഗിക്കുന്നു
+    const uHandImg = document.getElementById("user-hand-img");
+    const cHandImg = document.getElementById("cpu-hand-img");
 
-    // 1. Timeout Check (User didn't pick a number)
+    // 1. Timeout Check
     if (userChoiceNum === -1) {
         playerLife--;
         updateLifeDisplay();
@@ -135,8 +139,12 @@ function processResult() {
     }
 
     let cpuMove = Math.floor(Math.random() * 6) + 1;
-    if (cChoiceDisp) cChoiceDisp.innerText = cpuMove;
 
+    // --- ഇതാണ് പുതിയതായി ആഡ് ചെയ്യേണ്ട രണ്ട് വരികൾ ---
+    if (uHandImg) uHandImg.src = `assets/${userChoiceNum}.png`;
+    if (cHandImg) cHandImg.src = `assets/${cpuMove}.png`;
+    // ----------------------------------------------
+    
     // 2. Main Gameplay Logic
     if (userChoiceNum === cpuMove) {
         // Numbers match = Someone is OUT
