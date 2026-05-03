@@ -8,29 +8,54 @@
 </head>
 <body>
     <div class="menu-container">
-        <h1 class="logo-text" style="font-size: 2rem;">HAND CRICKET</h1>
+        <h1 class="logo-text">HAND CRICKET</h1>
         
         <div class="button-group">
-            <button class="menu-btn" onclick="window.location.href='toss.html'">PLAY WITH AI</button>
-            <button class="menu-btn" style="opacity: 0.5; cursor: not-allowed;">MULTIPLAYER (SOON)</button>
-            <button class="menu-btn" onclick="window.location.href='settings.html'">SETTINGS</button>
+            <button class="menu-btn" onclick="window.location.href='toss.html'">PLAY WITH COMPUTER</button>
             
+            <button class="menu-btn" style="opacity: 0.5; cursor: not-allowed;">MULTIPLAYER (SOON)</button>
+            
+            <button class="menu-btn" onclick="window.location.href='settings.html'">SETTINGS</button>
         </div>
     </div>
 
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #0b132b; /* ഇൻഡക്സ് പേജിന് സമാനമായ ബാക്ക്ഗ്രൗണ്ട് */
+        }
         .menu-container {
+            text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 40px;
         }
         .button-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
+            align-items: center;
         }
         .menu-btn {
-            width: 250px;
+            width: 280px;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 10px;
+            background: #1c2541;
+            color: #5bc0be;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .menu-btn:active {
+            transform: scale(0.95);
         }
     </style>
 </body>
