@@ -5,6 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hand Cricket - Stadium</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #0b132b;
+            color: #5bc0be;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+        #stadium-wrapper {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+            justify-content: space-between;
+        }
+        #score-overlay {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            background: #1c2541;
+            border-bottom: 3px solid #5bc0be;
+        }
+        .user-info, .cpu-info { text-align: center; }
+        #play-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+        .hand-gesture img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+        #controls-panel {
+            padding: 20px;
+            background: #1c2541;
+            border-top: 3px solid #5bc0be;
+        }
+        .number-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .control-btn {
+            padding: 15px;
+            font-size: 1.5rem;
+            background: #0b132b;
+            color: #5bc0be;
+            border: 2px solid #5bc0be;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
     <div id="stadium-wrapper">
@@ -23,16 +85,15 @@
 
         <div id="play-area">
             <div class="hand-gesture">
-    <img id="user-hand-img" src="assets/6.png" style="width: 100px; height: 100px;">
-</div>
-...
-<div class="hand-gesture">
-    <img id="cpu-hand-img" src="assets/6.png" style="width: 100px; height: 100px; transform: scaleX(-1);">
-</div>
-            
+                <img id="user-hand-img" src="assets/0.png">
+            </div>
+            <div class="hand-gesture">
+                <img id="cpu-hand-img" src="assets/0.png" style="transform: scaleX(-1);">
+            </div>
         </div>
 
         <div id="controls-panel">
+            <p id="game-status" style="text-align: center; margin-bottom: 10px;">READY?</p>
             <div class="number-buttons">
                 <button class="control-btn" onclick="play(1)">1</button>
                 <button class="control-btn" onclick="play(2)">2</button>
@@ -48,7 +109,7 @@
         <div class="modal-box">
             <h2 id="modal-title">OUT!</h2>
             <p id="modal-msg"></p>
-            <button class="modal-btn">OK</button>
+            <button class="modal-btn" onclick="closeModal()">OK</button>
         </div>
     </div>
 
