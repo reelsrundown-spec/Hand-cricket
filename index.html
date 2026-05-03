@@ -9,15 +9,14 @@
 </head>
 <body>
     <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Offline Ready!'))
-        .catch(err => console.log('Error: ', err));
-    });
-  }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Offline Ready!'))
+                    .catch(err => console.log('Error: ', err));
+            });
+        }
     </script>
-    
 
     <div class="loader-container">
         <h1 class="logo-text">HAND CRICKET</h1>
@@ -29,11 +28,6 @@
         <p id="status-text">INITIALIZING...</p>
         
         <button id="start-btn" class="hidden">START GAME</button>
-    </div>
-    <div style="display: flex; justify-content: center; gap: 20px; margin: 20px;">
-    <img id="cpu-hand" src="assets/6.png" style="width: 80px; height: 80px; transform: scaleX(-1);">
-    
-    <img id="user-hand" src="assets/6.png" style="width: 80px; height: 80px;">
     </div>
     
     <script>
@@ -54,7 +48,7 @@
         }, 100);
 
         startBtn.onclick = () => {
-            // Background music initialization can be added here later
+            // Index-ൽ നിന്ന് Home-ലേക്ക് പോകുന്നു
             window.location.href = 'home.html';
         };
     </script>
