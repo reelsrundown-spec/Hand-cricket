@@ -6,18 +6,74 @@
     <title>Hand Cricket Pro</title>
     <link rel="stylesheet" href="style.css">
     <meta name="theme-color" content="#0b132b">
-</head>
-<body>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Offline Ready!'))
-                    .catch(err => console.log('Error: ', err));
-            });
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #0b132b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #5bc0be;
+            font-family: sans-serif;
         }
-    </script>
 
+        .loader-container {
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(91, 192, 190, 0.5);
+        }
+
+        .progress-wrapper {
+            width: 100%;
+            height: 8px;
+            background: #1c2541;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #5bc0be;
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 15px #5bc0be;
+        }
+
+        #status-text {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* പൾസ് ചെയ്യുന്ന സ്റ്റൈൽ */
+        .tap-to-start {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+            display: none; /* ലോഡിംഗ് തീരുന്നത് വരെ കാണിക്കില്ല */
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body id="main-body">
     <div class="loader-container">
         <h1 class="logo-text">HAND CRICKET</h1>
         
@@ -26,30 +82,39 @@
         </div>
         
         <p id="status-text">INITIALIZING...</p>
-        
-        <button id="start-btn" class="hidden">START GAME</button>
+        <div id="tap-msg" class="tap-to-start">TAP TO START</div>
     </div>
-    
+
     <script>
         const progressBar = document.getElementById('progress-bar');
         const statusText = document.getElementById('status-text');
-        const startBtn = document.getElementById('start-btn');
+        const tapMsg = document.getElementById('tap-msg');
+        const mainBody = document.getElementById('main-body');
 
         let width = 0;
+        let isLoaded = false;
+
         const loadingInterval = setInterval(() => {
-            width += Math.floor(Math.random() * 5) + 1; // Realistic loading speed
+            width += Math.floor(Math.random() * 5) + 2;
             if (width >= 100) {
                 width = 100;
                 clearInterval(loadingInterval);
-                statusText.innerText = "READY TO PLAY";
-                startBtn.classList.remove('hidden');
+                finishLoading();
             }
             progressBar.style.width = width + '%';
-        }, 100);
+        }, 80);
 
-        startBtn.onclick = () => {
-            // Index-ൽ നിന്ന് Home-ലേക്ക് പോകുന്നു
-            window.location.href = 'home.html';
+        function finishLoading() {
+            isLoaded = true;
+            statusText.style.display = 'none';
+            tapMsg.style.display = 'block';
+        }
+
+        // സ്ക്രീനിൽ എവിടെ ടാപ്പ് ചെയ്താലും ഹോമിലേക്ക് പോകും
+        mainBody.onclick = () => {
+            if (isLoaded) {
+                window.location.href = 'home.html';
+            }
         };
     </script>
 </body>
