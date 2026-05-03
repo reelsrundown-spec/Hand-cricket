@@ -6,18 +6,28 @@
     <title>Hand Cricket - Coin Toss</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .toss-container {
+        body {
+            background-color: #0b132b;
+            color: #5bc0be;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+        .toss-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
         #coin {
             width: 120px;
             height: 120px;
             background: radial-gradient(circle, #ffd700, #daa520);
-            border: 4px solid #6fffe9;
+            border: 4px solid #5bc0be;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -25,8 +35,9 @@
             font-size: 3rem;
             font-weight: bold;
             color: #0b132b;
-            margin-bottom: 40px;
-            box-shadow: 0 0 20px rgba(111, 255, 233, 0.4);
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(91, 192, 190, 0.4);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .spinning {
             animation: flip 0.2s infinite;
@@ -37,8 +48,20 @@
         }
         .toss-btn-group {
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
+        .menu-btn {
+            width: 140px;
+            padding: 12px;
+            background: #1c2541;
+            color: #5bc0be;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -47,22 +70,27 @@
         
         <div id="coin">?</div>
         
-        <p id="toss-result-text" style="margin-bottom: 20px;">Pick Heads or Tails!</p>
+        <p id="toss-result-text">Pick Heads or Tails!</p>
 
         <div class="toss-btn-group" id="selection-btns">
             <button class="menu-btn" onclick="startToss('H')">HEADS</button>
             <button class="menu-btn" onclick="startToss('T')">TAILS</button>
         </div>
 
-        <button id="next-btn" class="hidden" onclick="window.location.href='game.html'">START GAME</button>
+        <div class="toss-btn-group hidden" id="choice-btns">
+            <button class="menu-btn" onclick="setRole('BATTING')">BAT</button>
+            <button class="menu-btn" onclick="setRole('BOWLING')">BOWL</button>
+        </div>
+
+        <button id="next-btn" class="menu-btn hidden" onclick="window.location.href='game.html'">START GAME</button>
     </div>
 
     <script>
         function startToss(userChoice) {
             const coin = document.getElementById("coin");
             const resultText = document.getElementById("toss-result-text");
-            const nextBtn = document.getElementById("next-btn");
             const btnGroup = document.getElementById("selection-btns");
+            const choiceBtns = document.getElementById("choice-btns");
 
             btnGroup.classList.add("hidden");
             coin.classList.add("spinning");
@@ -75,14 +103,23 @@
                 coin.innerText = result;
 
                 if (userChoice === result) {
-                    resultText.innerText = "You won the toss! You are BATTING.";
-                    localStorage.setItem("userRole", "BATTING");
+                    resultText.innerText = "You won the toss! Choose your side:";
+                    choiceBtns.classList.remove("hidden");
                 } else {
-                    resultText.innerText = "CPU won the toss! You are BOWLING.";
-                    localStorage.setItem("userRole", "BOWLING");
+                    const cpuRole = Math.random() < 0.5 ? "BATTING" : "BOWLING";
+                    const userRole = cpuRole === "BATTING" ? "BOWLING" : "BATTING";
+                    resultText.innerText = "CPU won the toss and chose to " + cpuRole + ". You are " + userRole + "!";
+                    localStorage.setItem("userRole", userRole);
+                    document.getElementById("next-btn").classList.remove("hidden");
                 }
-                nextBtn.classList.remove("hidden");
-            }, 2000);
+            }, 1500);
+        }
+
+        function setRole(role) {
+            localStorage.setItem("userRole", role);
+            document.getElementById("choice-btns").classList.add("hidden");
+            document.getElementById("toss-result-text").innerText = "You chose to " + role + "!";
+            document.getElementById("next-btn").classList.remove("hidden");
         }
     </script>
 </body>
