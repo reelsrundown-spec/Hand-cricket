@@ -1,68 +1,128 @@
-// --- Audio Path Configuration ---
-// Make sure the filenames match exactly what you uploaded to GitHub
-// ശരിയായ പാത്ത് ഇതാണ്
-const bgMusic = new Audio('music/sounds/handcricket.mp3'); 
+// --- Audio Configuration ---
+const bgMusic = new Audio('music/sounds/handcricket.mp3');
 bgMusic.loop = true;
 
-// --- Music Control Logic ---
-
-/**
- * Handles playing and pausing the background music 
- * based on user settings in localStorage.
- */
 function handleBackgroundMusic() {
     const isMusicEnabled = localStorage.getItem('musicEnabled') !== 'false';
-    
     if (isMusicEnabled) {
-        // Browsers block autoplay, so we use a promise catch
-        bgMusic.play().catch(error => {
-            console.log("Autoplay prevented. Music will start after first interaction.");
-        });
+        bgMusic.play().catch(() => console.log("Music interaction needed"));
     } else {
         bgMusic.pause();
     }
 }
 
-/**
- * Global click listener to start music on first user interaction.
- * Modern browsers require this to allow audio playback.
- */
-document.addEventListener('click', () => {
-    handleBackgroundMusic();
-}, { once: true });
+document.addEventListener('click', () => handleBackgroundMusic(), { once: true });
 
-// Check and update music status whenever a page loads
-window.addEventListener('DOMContentLoaded', () => {
-    handleBackgroundMusic();
-});
-
-// l--- Game State Variables ---
-let userChoiceNum = -1;
+// --- Game Variables ---
+let userChoiceNum = 0; // Default 0 (✊)
 let userScoreNum = 0;
 let cpuScoreNum = 0;
-let playerLife = 3; 
-
-// Loads the role (BATTING/BOWLING) from Toss page
-let currentInnings = localStorage.getItem("userRole") === "BATTING" ? "USER" : "CPU"; 
+let playerLife = 3;
+let currentInnings = localStorage.getItem("userRole") === "BATTING" ? "USER" : "CPU";
 let targetScore = Infinity;
 let gameTimer = null;
 
-const hands = { 0: "✊", 1: "☝️", 2: "✌️", 3: "🤟", 4: "🖖", 5: "🖐️", 6: "👍" };
+// --- UI Elements ---
+const uScoreDisp = document.getElementById("user-score");
+const cScoreDisp = document.getElementById("cpu-score");
+const statusTxt = document.getElementById("game-status");
+const uHandImg = document.getElementById("user-hand-img");
+const cHandImg = document.getElementById("cpu-hand-img");
 
-// --- UI Functions ---
+// --- Game Logic ---
 
-// Shows Professional Modal/Popup
-function showResult(title, message, btnText, callback) {
-    const modal = document.getElementById("game-modal");
-    if (!modal) {
-        alert(title + "\n" + message);
-        if (callback) callback();
+function startClock() {
+    userChoiceNum = 0; // Reset choice for next ball
+    // തുടക്കത്തിൽ രണ്ട് പേരും 0 (✊) കാണിക്കട്ടെ
+    uHandImg.src = "assets/0.png";
+    cHandImg.src = "assets/0.png";
+
+    statusTxt.innerText = currentInnings === "USER" ? "YOU ARE BATTING" : "CPU IS BATTING";
+    
+    let time = 3;
+    statusTxt.innerText = `READY... ${time}`;
+    
+    clearInterval(gameTimer);
+    gameTimer = setInterval(() => {
+        time--;
+        if (time > 0) {
+            statusTxt.innerText = `READY... ${time}`;
+        } else {
+            clearInterval(gameTimer);
+            processResult();
+        }
+    }, 1000);
+}
+
+function play(n) {
+    userChoiceNum = n;
+    // നീ അമർത്തുന്ന നമ്പറിന്റെ പടം അപ്പോൾ തന്നെ കാണിക്കും
+    uHandImg.src = `assets/${n}.png`;
+}
+
+function processResult() {
+    let cpuMove = Math.floor(Math.random() * 6) + 1;
+    cHandImg.src = `assets/${cpuMove}.png`;
+
+    if (userChoiceNum === 0) {
+        // ഒന്നും അമർത്തിയില്ലെങ്കിൽ
+        playerLife--;
+        updateLifeDisplay();
+        statusTxt.innerText = "MISSED! -1 LIFE";
+        if (playerLife <= 0) {
+            showResult("GAME OVER", "You missed too many balls!", "RETRY", () => location.reload());
+            return;
+        }
+        setTimeout(startClock, 1500);
         return;
     }
+
+    if (userChoiceNum === cpuMove) {
+        // --- OUT LOGIC ---
+        if (currentInnings === "USER") {
+            targetScore = userScoreNum + 1;
+            currentInnings = "CPU";
+            showResult("OUT!", `You scored ${userScoreNum}. CPU needs ${targetScore} to win.`, "START BOWLING", () => {
+                cpuScoreNum = 0; // കമ്പ്യൂട്ടറിന്റെ സ്കോർ റീസെറ്റ് ചെയ്യുന്നു
+                startClock();
+            });
+        } else {
+            // CPU Out
+            if (cpuScoreNum < targetScore - 1) {
+                showResult("VICTORY!", "CPU is OUT! You won the match!", "PLAY AGAIN", () => location.reload());
+            } else {
+                showResult("MATCH TIED!", "Scores are level!", "PLAY AGAIN", () => location.reload());
+            }
+        }
+    } else {
+        // --- SCORING LOGIC ---
+        if (currentInnings === "USER") {
+            userScoreNum += userChoiceNum;
+            uScoreDisp.innerText = userScoreNum;
+        } else {
+            cpuScoreNum += cpuMove;
+            cScoreDisp.innerText = cpuScoreNum;
+            if (cpuScoreNum >= targetScore) {
+                showResult("DEFEAT", "CPU chased the target!", "TRY AGAIN", () => location.reload());
+                return;
+            }
+        }
+        setTimeout(startClock, 1500);
+    }
+}
+
+function updateLifeDisplay() {
+    const lifeDisp = document.getElementById("life-icons");
+    if (lifeDisp) {
+        lifeDisp.innerText = "❤️".repeat(playerLife) + "🖤".repeat(3 - playerLife);
+    }
+}
+
+function showResult(title, message, btnText, callback) {
+    const modal = document.getElementById("game-modal");
     document.getElementById("modal-title").innerText = title;
     document.getElementById("modal-msg").innerText = message;
-    
-    const btn = modal.querySelector(".modal-btn") || modal.querySelector("button");
+    const btn = modal.querySelector(".modal-btn");
     btn.innerText = btnText;
     btn.onclick = () => {
         modal.classList.add('hidden');
@@ -71,117 +131,9 @@ function showResult(title, message, btnText, callback) {
     modal.classList.remove('hidden');
 }
 
-// Updates the Heart Icons (Life)
-function updateLifeDisplay() {
-    const lifeDisp = document.getElementById("life-icons");
-    if (lifeDisp) {
-        lifeDisp.innerText = "❤️".repeat(playerLife) + "🖤".repeat(3 - playerLife);
-    }
-}
-
-// Starts the 3-second countdown
-
-    function startClock() {
-    userChoiceNum = -1;
-    // പഴയ ചിത്രങ്ങൾ മാറ്റി ലോഗോയോ ഡിഫോൾട്ട് ചിത്രമോ കാണിക്കാൻ:
-    if (document.getElementById("user-hand-img")) document.getElementById("user-hand-img").src = "assets/6.png";
-    if (document.getElementById("cpu-hand-img")) document.getElementById("cpu-hand-img").src = "assets/6.png";
-
-    // ബാക്കി കോഡുകൾ പഴയതുപോലെ...
-        
-    if (uChoiceDisp) uChoiceDisp.innerText = "-";
-    if (cChoiceDisp) cChoiceDisp.innerText = "-";
-    
-    if (statusTxt) {
-        statusTxt.innerText = currentInnings === "USER" ? "YOU ARE BATTING" : "CPU IS BATTING";
-    
-    
-    let time = 3;
-    if (timerTxt) timerTxt.innerText = time;
-    
-    clearInterval(gameTimer);
-    gameTimer = setInterval(() => {
-        time--;
-        if (time > 0) {
-            if (timerTxt) timerTxt.innerText = time;
-        } else { 
-            clearInterval(gameTimer); 
-            processResult(); 
-        }
-    }, 1000);
-}
-
-// Captures user button click (1-6)
-function play(n) { 
-    userChoiceNum = n; 
-    const uChoiceDisp = document.getElementById("user-choice");
-    if (uChoiceDisp) uChoiceDisp.innerText = n; 
-}
-// --- Main Game Logic ---
-function processResult() {
-    const uScoreDisp = document.getElementById("user-score");
-    const cScoreDisp = document.getElementById("cpu-score");
-    const uHandImg = document.getElementById("user-hand-img"); // പുതിയത്
-    const cHandImg = document.getElementById("cpu-hand-img"); // പുതിയത്
-
-    if (userChoiceNum === -1) {
-        playerLife--;
-        updateLifeDisplay();
-        if (playerLife <= 0) { 
-            showResult("GAME OVER", "You missed too many chances!", "RETRY", () => location.reload());
-            return; 
-        }
-        setTimeout(startClock, 1000); 
-        return;
-    }
-
-    let cpuMove = Math.floor(Math.random() * 6) + 1;
-    
-    // --- ചിത്രങ്ങൾ മാറ്റുന്ന വരികൾ ---
-    if (uHandImg) uHandImg.src = "assets/" + userChoiceNum + ".png";
-    if (cHandImg) cHandImg.src = "assets/" + cpuMove + ".png";
-    // ----------------------------
-
-    if (userChoiceNum === cpuMove) {
-        if (currentInnings === "USER") {
-            targetScore = userScoreNum + 1;
-            currentInnings = "CPU";
-            showResult("OUT!", "You scored " + userScoreNum + ". CPU needs " + targetScore + " to win.", "START BOWLING", startClock);
-        } else {
-            if (cpuScoreNum < targetScore - 1) {
-                showResult("VICTORY!", "CPU is OUT! You won.", "PLAY AGAIN", () => location.reload());
-            } else {
-                showResult("MATCH TIED!", "Both scored same!", "PLAY AGAIN", () => location.reload());
-            }
-        }
-    } else {
-        if (currentInnings === "USER") {
-            userScoreNum += userChoiceNum;
-            if (uScoreDisp) uScoreDisp.innerText = userScoreNum;
-        } else {
-            cpuScoreNum += cpuMove;
-            if (cScoreDisp) cScoreDisp.innerText = cpuScoreNum;
-            if (cpuScoreNum >= targetScore) { 
-                showResult("DEFEAT", "CPU won!", "TRY AGAIN", () => location.reload());
-                return; 
-            }
-        }
-        setTimeout(startClock, 1500);
-    }
-}
-        
-
-// Reset Game Data
-function resetGame() {
-    localStorage.clear();
-    location.reload();
-}
-
-// Initial Page Load
-document.addEventListener("DOMContentLoaded", () => { 
-    updateLifeDisplay(); 
-    if (document.getElementById("user-score")) {
-        startClock(); 
-    }
-});
-                
+// Initial Load
+window.onload = () => {
+    updateLifeDisplay();
+    startClock();
+};
+                    
